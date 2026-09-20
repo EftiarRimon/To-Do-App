@@ -1,0 +1,7 @@
+to do app:
+
+1. add a task
+2. mark a task complete
+3. delete a task
+4. edit task
+
