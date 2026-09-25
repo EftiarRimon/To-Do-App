@@ -1,7 +1,7 @@
 const taskInput=document.getElementById("taskInput")
 const TaskList = document.getElementById("TaskList");
 
-let tasks=[];
+let tasks=JSON.parse(localStorage.getItem("tasks")) ||[];
 
 function addTask(){
     const text=taskInput.value.trim();
@@ -53,45 +53,50 @@ function toggleComplete(id){
 }
 
 function renderTasks(){
-    TaskList.innerHTML=""
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    TaskList.innerHTML = "";
+
     tasks.forEach(function showTask(task, index){
 
-        const li=document.createElement("li");
-        li.textContent="task"+(index+1)+":"+task.text;
+        const li = document.createElement("li");
+
+        const span = document.createElement("span");
+        span.textContent = "Task " + (index + 1) + ": " + task.text;
         if (task.completed) {
-            h1.style.textDecoration = "line-through";
-        } else {
-            li.style.textDecoration = "none";
+            span.style.textDecoration = "line-through";
+            span.style.opacity = "0.5";
         }
 
-        TaskList.appendChild(li);
-
-        const DltButton=document.createElement("Button");
-        DltButton.textContent="Delete"
-        li.appendChild(DltButton);
-        DltButton.addEventListener("click", function(){
-            DeleteTask(task.id)
-        })
-        const editButton=document.createElement("Button")
-        editButton.textContent="edit"
-        li.appendChild(editButton);
-        editButton.addEventListener("click",function(){
-            EditTask(task.id)
-        })
-
-        const checkBox=document.createElement("input");
-        checkBox.type="checkbox";
-        checkBox.checked=task.completed;
-
-        checkBox.addEventListener("click",function(){
+        const checkBox = document.createElement("input");
+        checkBox.type = "checkbox";
+        checkBox.checked = task.completed;
+        checkBox.addEventListener("click", function(){
             toggleComplete(task.id);
         });
-        li.appendChild(checkBox);
 
-        
-        
+        const editButton = document.createElement("button");
+        editButton.textContent = "edit";
+        editButton.addEventListener("click", function(){
+            EditTask(task.id);
+        });
+
+        const DltButton = document.createElement("button");
+        DltButton.textContent = "Delete";
+        DltButton.addEventListener("click", function(){
+            DeleteTask(task.id);
+        });
+
+        // সব বানানো শেষ, এখন একসাথে বসাও (এই ক্রমে দেখাবে)
+        li.appendChild(checkBox);
+        li.appendChild(span);
+        li.appendChild(editButton);
+        li.appendChild(DltButton);
+
+        TaskList.appendChild(li);
     });
 }
+
+renderTasks();
 document.getElementById("addTask").addEventListener("click",addTask);
 
 
